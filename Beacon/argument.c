@@ -4,6 +4,7 @@
 
 #include "beacon.h"
 #include "utils.h"
+#include "logger.h"
 
 typedef struct _ARGUMENT_ENTRY
 {
@@ -46,7 +47,11 @@ ARGUMENT_ENTRY* ArgumentFindOrCreate(char* expanded)
 	if (!current)
 	{
 		// Create a new entry for the new argument
-		argument = (ARGUMENT_ENTRY*)malloc(sizeof(ARGUMENT_ENTRY));
+		argument = (ARGUMENT_ENTRY*)calloc(1, sizeof(ARGUMENT_ENTRY));
+		if (!argument) {
+			LERROR("Memory allocation failed for new argument entry");
+			return NULL;
+		}
 		*argument = (ARGUMENT_ENTRY){ .isActive = FALSE, .expandedCmd = NULL, .expandedFullCmd = NULL, .next = current };
 		gArguments = argument;
 	} else
@@ -76,6 +81,11 @@ void ArgumentAdd(char* buffer, int length)
 	BeaconDataStringCopySafe(&parser, expandedFull, MAX_EXPANDED_FULL);
 
 	ARGUMENT_ENTRY* argument = ArgumentFindOrCreate(expanded);
+	if (!argument) {
+		LERROR("Failed to find or create argument entry");
+		BeaconDataFree(locals);
+		return;
+	}
 	argument->isActive = TRUE;
 
 	ExpandEnvironmentStrings_s(original, argument->expandedCmd, MAX_EXPANDED);
@@ -87,6 +97,10 @@ void ArgumentAdd(char* buffer, int length)
 void ArgumentRemove(char* buffer, int length)
 {
 	char* expanded = malloc(MAX_EXPANDED);
+	if (!expanded) {
+		LERROR("Memory allocation failed for expanded argument");
+		return;
+	}
 	buffer[length] = '\0';
 	ExpandEnvironmentStrings_s(buffer, expanded, MAX_EXPANDED);
 	// For each active argument
