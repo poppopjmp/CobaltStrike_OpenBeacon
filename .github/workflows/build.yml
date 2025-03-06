@@ -1,0 +1,37 @@
+name: Build
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Set up Visual Studio
+      uses: microsoft/setup-msbuild@v1
+
+    - name: Install dependencies
+      run: |
+        git clone https://github.com/libtom/libtommath.git
+        git clone https://github.com/libtom/libtomcrypt.git
+
+    - name: Build Debug x64
+      run: msbuild CobaltStrike.sln /p:Configuration=Debug /p:Platform=x64
+
+    - name: Build Release x64
+      run: msbuild CobaltStrike.sln /p:Configuration=Release /p:Platform=x64
+
+    - name: Build Debug x86
+      run: msbuild CobaltStrike.sln /p:Configuration=Debug /p:Platform=x86
+
+    - name: Build Release x86
+      run: msbuild CobaltStrike.sln /p:Configuration=Release /p:Platform=x86

@@ -1,5 +1,7 @@
 # Cobalt Strike Beacon Open Source Implementation
 
+[![Build Status](https://github.com/poppopjmp/CobaltStrike_OpenBeacon/actions/workflows/build.yml/badge.svg)](https://github.com/poppopjmp/CobaltStrike_OpenBeacon/actions)
+
 ## Overview
 
 Welcome to the open-source implementation of the Cobalt Strike Beacon! This project aims to provide a fully functional, from-scratch alternative to the Cobalt Strike Beacon, offering transparency and flexibility for security professionals and enthusiasts.
