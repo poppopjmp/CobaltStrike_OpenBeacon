@@ -25,13 +25,23 @@ jobs:
         git clone https://github.com/libtom/libtomcrypt.git
 
     - name: Build Debug x64
-      run: msbuild CobaltStrike.sln /p:Configuration=Debug /p:Platform=x64
+      run: msbuild CobaltStrike.sln /p:Configuration=Debug /p:Platform=x64 | tee build_debug_x64.log
 
     - name: Build Release x64
-      run: msbuild CobaltStrike.sln /p:Configuration=Release /p:Platform=x64
+      run: msbuild CobaltStrike.sln /p:Configuration=Release /p:Platform=x64 | tee build_release_x64.log
 
     - name: Build Debug x86
-      run: msbuild CobaltStrike.sln /p:Configuration=Debug /p:Platform=x86
+      run: msbuild CobaltStrike.sln /p:Configuration=Debug /p:Platform=x86 | tee build_debug_x86.log
 
     - name: Build Release x86
-      run: msbuild CobaltStrike.sln /p:Configuration=Release /p:Platform=x86
+      run: msbuild CobaltStrike.sln /p:Configuration=Release /p:Platform=x86 | tee build_release_x86.log
+
+    - name: Upload build logs
+      uses: actions/upload-artifact@v2
+      with:
+        name: build-logs
+        path: |
+          build_debug_x64.log
+          build_release_x64.log
+          build_debug_x86.log
+          build_release_x86.log
